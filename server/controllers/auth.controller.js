@@ -10,7 +10,7 @@ export const signup = async (req, res, next) => {
         next(errorHandler(400, 'All fields are required'));
     }
     if (password.length < 7) { // Require strong(ish) passwords
-        return res.status(400).json({message: 'Password must be at least 7 characters long'});
+        next(errorHandler(400, 'Password must be at least 7 characters long'));
     } 
 
 

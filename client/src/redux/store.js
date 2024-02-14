@@ -6,3 +6,5 @@ export const store = configureStore({
     user: userReducer,
   },
 })
+
+export const persistor = persistorSt

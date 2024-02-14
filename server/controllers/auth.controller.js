@@ -58,3 +58,51 @@ export const signin = async(req, res, next) => {
         next(error);
     }
 }
+
+
+export const google = async (req, res, next) => {
+    const { name, email, googlePhotoUrl } = req.body;
+
+    try {
+        const user = await User.findOne({ email });
+        // if user exists, we create a token using jwt
+        if (user) { 
+            const token = jwt.sign({ id: user._id}, process.env.JWT_TOKEN);
+            const { password, ...rest } = user._doc;
+            // httpOnly so that cookie cannot be accessed by client-side scripts
+            res.status(200).cookie('access_token', token, {
+                httpOnly: true, 
+            }).json(rest);
+        }
+        // if user doesn't exist, we create a new user
+        else {
+            // we create a random password, since user doesn't yet have a pw but we want to sign them in
+            // take a random number, convert it to a string, and take the last 8 characters
+            // without slice, we'd get something like 0.123456789, and we'd only want 12345678
+            // to make it more secure, we do it twice
+            const generatedPassword = Math.random().toString(36).slice(-8) + Math.random().toString(36).slice(-8);
+            const hashedPassword = bcryptjs.hashSync(generatedPassword, 10);
+            const newUser = new User({
+                // Cyrus Estavillo => cyrusestavillo1625
+                // split names, join them, make them lowercase, and add a random number
+                // note that doing math.random().toString(9) gets us only numbers, not numbers and letters
+                username: name.toLowerCase().split(' ').join('') + Math.random().toString(9).slice(-4),
+                email,
+                password: hashedPassword,
+                profilePicture: googlePhotoUrl,
+            });
+
+            // save new user
+            await newUser.save();
+            // create token
+            const token = jwt.sign({ id: user._id}, process.env.JWT_TOKEN);
+            const { password, ...rest } = user._doc;
+            // cookie cannot be accessed by client-side scripts
+            res.status(200).cookie('access_token', token, {
+                httpOnly: true, 
+            }).json(rest);
+        }
+    } catch (error) {
+        next(error);
+    }
+}

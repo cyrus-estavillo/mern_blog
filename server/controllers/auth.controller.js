@@ -5,13 +5,12 @@ import jwt from 'jsonwebtoken';
 
 
 export const signup = async (req, res, next) => {
-    const { email, password } = req.body;
+    const { username, email, password } = req.body;
 
-    // If username, email, or password are missing, or if they are empty strings, return an error message
     if (!username || !email || !password || username === '' || email === '' || password === '') {
         next(errorHandler(400, 'All fields are required'));
     }
-    if (password.length < 7) { // Require strong(ish) passwords
+    if (password.length < 7) { 
         next(errorHandler(400, 'Password must be at least 7 characters long'));
     } 
 

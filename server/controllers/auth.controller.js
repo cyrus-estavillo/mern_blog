@@ -46,7 +46,7 @@ export const signin = async(req, res, next) => {
             return next(errorHandler(401, 'There is no account associated with the following credentials. Please try again.'));
         }
         
-        const token = jwt.sign({ id: validUser._id }, process.env.JWT_TOKEN, { expiresIn: '24h' });
+        const token = jwt.sign({ id: validUser._id, isAdmin: validUser.isAdmin }, process.env.JWT_TOKEN, { expiresIn: '24h' });
 
         const { password: pass, ...rest} = validUser._doc;
 
@@ -66,7 +66,7 @@ export const google = async (req, res, next) => {
         const user = await User.findOne({ email });
         // if user exists, we create a token using jwt
         if (user) { 
-            const token = jwt.sign({ id: user._id}, process.env.JWT_TOKEN);
+            const token = jwt.sign({ id: user._id, isAdmin: user.isAdmin }, process.env.JWT_TOKEN);
             const { password, ...rest } = user._doc;
             // httpOnly so that cookie cannot be accessed by client-side scripts
             res.status(200).cookie('access_token', token, {
@@ -94,7 +94,7 @@ export const google = async (req, res, next) => {
             // save new user
             await newUser.save();
             // create token
-            const token = jwt.sign({ id: user._id}, process.env.JWT_TOKEN);
+            const token = jwt.sign({ id: user._id, newAdmin: newUser.isAdmin }, process.env.JWT_TOKEN);
             const { password, ...rest } = user._doc;
             // cookie cannot be accessed by client-side scripts
             res.status(200).cookie('access_token', token, {

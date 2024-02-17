@@ -3,7 +3,9 @@ import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import userRoutes from './routes/user.route.js';
 import authRoutes from './routes/auth.route.js';
+import postRoutes from './routes/post.route.js';
 import cookieParser from 'cookie-parser';
+
 
 dotenv.config();
 
@@ -34,6 +36,7 @@ app.listen(3000, () => {
 // Once you create the route elsewhere, you can use them here
 app.use('/server/user', userRoutes);
 app.use('/server/auth', authRoutes);
+app.use('/server/post', postRoutes);
 
 app.use((err, req, res, next) => {
     const statusCode = err.statusCode || 500;

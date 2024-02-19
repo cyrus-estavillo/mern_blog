@@ -1,14 +1,16 @@
-import { Alert, Button, TextInput, Textarea } from 'flowbite-react';
+import { Alert, Button, Textarea } from 'flowbite-react';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import Comment from './Comment';
+import PropTypes from 'prop-types';
 
 export default function CommentSection({ postId }) {
   const { currentUser } = useSelector(state => state.user);
   const [comment, setComment] = useState('');
   const [commentError, setCommentError] = useState(null);
   const [comments, setComments] = useState([]);
+  console.log(postId);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -125,3 +127,7 @@ export default function CommentSection({ postId }) {
     </div>
   )
 }
+
+CommentSection.propTypes = {
+  postId: PropTypes.string.isRequired,
+};

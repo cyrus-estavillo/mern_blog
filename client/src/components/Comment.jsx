@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import PropTypes from 'prop-types';
 import moment from 'moment';
 
 export default function Comment({ comment }) {
@@ -40,3 +41,15 @@ export default function Comment({ comment }) {
     </div>
   )
 }
+
+
+Comment.propTypes = {
+    comment: PropTypes.shape({
+        content: PropTypes.string.isRequired,
+        userId: PropTypes.string.isRequired,
+        postId: PropTypes.string.isRequired,
+        likes: PropTypes.array.isRequired,
+        numberOfLikes: PropTypes.number.isRequired,
+        createdAt: PropTypes.string.isRequired,
+    }).isRequired
+};

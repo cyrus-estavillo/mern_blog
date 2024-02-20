@@ -58,9 +58,7 @@ export const updateUser = async(req, res, next) => {
         const updatedUser = await User.findByIdAndUpdate(
           req.params.userId,
           {
-            $set: {
-              updateObject,
-            },
+            $set: updateObject,
           },
           { new: true }
         );

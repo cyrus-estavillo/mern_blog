@@ -17,6 +17,7 @@ export default function UpdatePost() {
     const [imageUploadError, setImageUploadError] = useState(null);
     const [formData, setFormData] = useState({});
     const [publishError, setPublishError] = useState(null);
+    const [initialContent, setInitialContent] = useState('');
 
     const { postId } = useParams();
     const navigate = useNavigate();
@@ -41,6 +42,14 @@ export default function UpdatePost() {
             console.log(error);
         }
     }, [postId]);
+
+
+
+    useEffect(() => {
+        if (formData.content) {
+            setInitialContent(formData.content);
+        }
+    }, [formData.content]);
 
 
 
@@ -85,7 +94,10 @@ export default function UpdatePost() {
 
     const handleSubmit = async(e) => {
         e.preventDefault();
+       
         try {
+            console.log(formData);
+            console.log(currentUser);
             const res = await fetch(`/server/post/updatepost/${formData._id}/${currentUser._id}`, {
                 method: 'PUT',
                 headers: {
@@ -109,6 +121,11 @@ export default function UpdatePost() {
     }
 
 
+    useEffect(() => {
+        console.log("Current formData state:", formData);
+      }, [formData]);
+      
+
 
   return (
     <div className='p-3 max-w-3xl mx-auto min-h-screen'>
@@ -124,15 +141,15 @@ export default function UpdatePost() {
                     id='title'
                     className='flex-1'
                     onChange={(e) => 
-                        setFormData({ ...formData, title: e.target.value })
+                        setFormData(currentData => ({ ...currentData, title: e.target.value }))
                     }
                     value={formData.title}
 
                 />
                 <Select 
-                    onChange={(e) => 
-                        setFormData({ ...formData, category: e.target.value })
-                    }
+                    onChange={(e) => {
+                        setFormData(currentData => ({ ...currentData, category: e.target.value }));
+                    }}
                     value={formData.category}
                 >
                     <option value="uncategorized">Select a category</option>
@@ -176,9 +193,9 @@ export default function UpdatePost() {
                 placeholder='Write something amazing...' 
                 className='h-72 mb-12' 
                 required
-                onChange={
-                    (value) => {setFormData({ ...formData, content: value})}
-                }
+                onChange={(value) => {
+                    setFormData(currentData => ({ ...currentData, content: value }));
+                }}
             />
             <Button type='submit' gradientDuoTone='purpleToPink'>
                 Update
